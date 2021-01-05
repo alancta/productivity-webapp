@@ -5,7 +5,7 @@ export default function SetTimer(props) {
     <div className="timer-container">
       <h1>{props.title}</h1>
       <div>
-        <button onClick={props.handleIncrement}>
+        <button onClick={props.handleDecrement}>
           {" "}
           <FontAwesomeIcon icon="minus-square" />
         </button>
