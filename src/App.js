@@ -19,8 +19,8 @@ class App extends Component {
     this.subtract1SecLoop = undefined;
   }
   state = {
-    breakMinCount: 5,
-    sessionMinCount: 25,
+    breakCounter: 5,
+    sessionCounter: 25,
     totalSecs: 25 * 60, //default timer set at 25 mins (*60 seconds)
     isInSession: false,
     currentMode: "Session",
@@ -30,8 +30,8 @@ class App extends Component {
   //reset timer to default values
   handleReset = () => {
     this.setState({
-      breakMinCount: 5,
-      sessionMinCount: 25,
+      breakCounter: 5,
+      sessionCounter: 25,
       totalSecs: 25 * 60, //default timer set at 25 mins (*60 seconds)
       isInSession: false,
       currentMode: "Session"
@@ -55,17 +55,18 @@ class App extends Component {
       );
       //and start subtracting 1 from the current timer
       this.subtract1SecLoop = setInterval(() => {
+        // set 1 second interval to subtract 1 every second
         const {
           totalSecs,
           currentMode,
-          breakMinCount,
-          sessionMinCount,
+          breakCounter,
+          sessionCounter,
           coinCount
         } = this.state;
         //set interval between every second to check totalSec value
         if (totalSecs !== 0) {
           this.setState({ totalSecs: totalSecs - 1 });
-          //current timer reaches 0
+          //if current (either break or session) timer reaches 0
         } else {
           this.setState(
             {
@@ -73,8 +74,8 @@ class App extends Component {
               coinCount: currentMode === "Session" ? coinCount + 1 : coinCount,
               totalSecs:
                 currentMode === "Session"
-                  ? breakMinCount * 60
-                  : sessionMinCount * 60
+                  ? breakCounter * 60
+                  : sessionCounter * 60
             },
             () => {
               console.log("cc: " + this.state.coinCount);
@@ -87,25 +88,29 @@ class App extends Component {
   componentWillUnmount() {
     clearInterval(this.subtract1SecLoop);
   }
-  handleTimeDecrement(type) {
-    if (type === "session") {
-      const { sessionMinCount } = this.state;
-      this.setState({ sessionMinCount: sessionMinCount - 1 });
-    } else {
-      const { breakMinCount } = this.state;
-      this.setState({ breakMinCount: breakMinCount - 1 });
-    }
-  }
+  handleTimeDecrement = type => {
+    const { sessionCounter } = this.state;
+    const { breakCounter } = this.state;
 
-  handleTimeIncrement(type) {
-    if (type === "session") {
-      const { sessionMinCount } = this.state;
-      this.setState({ sessionMinCount: sessionMinCount - 1 });
+    if (type === "session" && sessionCounter > 0) {
+      this.setState({ sessionCounter: sessionCounter - 1 });
     } else {
-      const { breakMinCount } = this.state;
-      this.setState({ breakMinCount: breakMinCount - 1 });
+      if (breakCounter > 0) {
+        this.setState({ breakCounter: breakCounter - 1 });
+      }
     }
-  }
+  };
+
+  handleTimeIncrement = type => {
+    const { sessionCounter } = this.state;
+
+    if (type === "session") {
+      this.setState({ sessionCounter: sessionCounter + 1 });
+    } else {
+      const { breakCounter } = this.state;
+      this.setState({ breakCounter: breakCounter + 1 });
+    }
+  };
 
   convertToMinAndSecs = totalSecs => {
     const mins = Math.floor(totalSecs / 60);
@@ -115,24 +120,27 @@ class App extends Component {
   };
   render() {
     const {
-      breakMinCount,
-      sessionMinCount,
+      breakCounter,
+      sessionCounter,
       totalSecs,
       currentMode,
       isInSession
     } = this.state;
+
     const breakProps = {
       title: "Break Length",
-      value: breakMinCount,
-      handleDecrement: this.handleTimeDecrement("break"),
-      handleIncrement: this.handleTimeIncrement("break")
+      type: "break",
+      value: breakCounter,
+      handleDecrement: this.handleTimeDecrement,
+      handleIncrement: this.handleTimeIncrement
     };
 
     const sessionProps = {
       title: "Session Length",
-      value: sessionMinCount,
-      handleDecrement: this.handleTimeDecrement("session"),
-      handleIncrement: this.handleTimeIncrement("session")
+      type: "session",
+      value: sessionCounter,
+      handleDecrement: this.handleTimeDecrement,
+      handleIncrement: this.handleTimeIncrement
     };
     return (
       <div>
