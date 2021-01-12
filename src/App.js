@@ -8,10 +8,16 @@ import {
   faSync
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import Header from "./components/Header";
+import Footer from "./components/Footer"
+import 'bootstrap/dist/css/bootstrap.min.css'
 import "./App.css";
+
 import SetTimer from "./components/SetTimer";
+
 library.add(faMinusSquare, faPlusSquare, faPlay, faPause, faSync);
+
+
 
 class App extends Component {
   constructor(props) {
@@ -149,7 +155,9 @@ class App extends Component {
       handleIncrement: this.handleTimeIncrement
     };
     return (
+      
       <div>
+        <Header />
         <div>
           <SetTimer {...breakProps} />
           <SetTimer {...sessionProps} />
@@ -169,6 +177,7 @@ class App extends Component {
             </button>
           </div>
         </div>
+        <Footer/>
       </div>
     );
   }
