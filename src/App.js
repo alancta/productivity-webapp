@@ -32,7 +32,7 @@ class App extends Component {
     this.setState({
       breakCounter: 5,
       sessionCounter: 25,
-      totalSecs: 25 * 60, //default timer set at 25 mins (*60 seconds)
+      totalSecs: this.sessionCounter * 60, //default timer set at 25 mins (*60 seconds)
       isInSession: false,
       currentMode: "Session"
     });
@@ -89,23 +89,29 @@ class App extends Component {
     clearInterval(this.subtract1SecLoop);
   }
   handleTimeDecrement = type => {
-    const { sessionCounter } = this.state;
+    let { sessionCounter } = this.state;
     const { breakCounter } = this.state;
 
     if (type === "session" && sessionCounter > 0) {
-      this.setState({ sessionCounter: sessionCounter - 1 });
-    } else {
-      if (breakCounter > 0) {
-        this.setState({ breakCounter: breakCounter - 1 });
-      }
+      sessionCounter = sessionCounter - 1;
+      this.setState({
+        sessionCounter: sessionCounter,
+        totalSecs: sessionCounter * 60
+      });
+    } else if (type !== "session" && breakCounter > 0) {
+      this.setState({ breakCounter: breakCounter - 1 });
     }
   };
 
   handleTimeIncrement = type => {
-    const { sessionCounter } = this.state;
+    let { sessionCounter } = this.state;
 
     if (type === "session") {
-      this.setState({ sessionCounter: sessionCounter + 1 });
+      sessionCounter = sessionCounter + 1;
+      this.setState({
+        sessionCounter: sessionCounter,
+        totalSecs: sessionCounter * 60
+      });
     } else {
       const { breakCounter } = this.state;
       this.setState({ breakCounter: breakCounter + 1 });
