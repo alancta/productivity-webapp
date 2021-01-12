@@ -1,0 +1,13 @@
+$theme-colors: (
+  "primary": #e35d6a,
+);
+
+// $colors: (
+//   "red": $red-400,
+// );
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+body {
+  background-color: aquamarine;
+  text-align: center;
+}
